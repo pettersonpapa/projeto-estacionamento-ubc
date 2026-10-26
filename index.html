@@ -1,0 +1,185 @@
+<!doctype html>
+<!-- ParkingHub - estrutura da página (versão simples).
+     O HTML diz O QUE existe na página. Cada elemento importante tem um "id", que o JavaScript usa para achá-lo.
+     O atributo "class" serve para o CSS dar o visual. O atributo "hidden" esconde o elemento até o JavaScript mostrá-lo. -->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">                                                  <!-- permite acentos e caracteres especiais -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- ajusta a página à largura do celular -->
+  <title>ParkingHub · Reserva de vagas</title>                            <!-- texto da aba do navegador -->
+  <link rel="icon" href="image/logo-provisoria.jpeg">                  <!-- ícone da aba -->
+  <link rel="stylesheet" href="style.css">                                <!-- liga o arquivo de aparência -->
+  <script src="script.js" defer></script>                                 <!-- liga a lógica; "defer" espera a página carregar antes de rodar -->
+</head>
+<body>
+  <!-- Filtro invisível: no tema claro, troca o preto da logo por branco (o CSS usa o id "logo-claro") -->
+  <svg width="0" height="0" style="position:absolute"><filter id="logo-claro" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 -1 0 0  0 1 -1 0 0  0 0 0 0 0  1 0 0 0 0"/></filter></svg>
+
+  <!-- CABEÇALHO: logo, nome do sistema e botão que alterna o tema claro/escuro -->
+  <header class="topo">
+    <div class="miolo">
+      <a class="marca" href="">
+        <span class="logo"><img src="image/logo-provisoria.jpeg" alt="Logo"></span>
+        <span>ParkingHub<small>Reserva de vagas</small></span>
+      </a>
+      <button class="icone" id="tema" type="button" aria-label="Alternar tema">🌙</button>
+    </div>
+  </header>
+
+  <main class="miolo pagina">
+    <h1>Reserve sua vaga</h1>
+    <p class="sub">Escolha sua vaga, informe seus dados e siga para o pagamento.</p>
+
+    <!-- Barra de progresso: o JavaScript marca qual etapa está ativa -->
+    <ol class="etapas" id="etapas"><li>Vaga e período</li><li>Seus dados</li><li>Pagamento</li></ol>
+
+    <!-- ===== ETAPA 1: período, planta e resumo ===== -->
+    <form class="reserva" id="tela-vaga" novalidate>
+
+      <!-- Período: modalidade, data e horários -->
+      <section class="periodo">
+        <h2>Período da reserva</h2>
+        <fieldset class="modo">
+          <legend>Modalidade</legend>
+          <!-- Os dois botões de rádio têm o mesmo "name", então só um pode ficar marcado -->
+          <label><input type="radio" name="modalidade" value="horario" checked> Por horário</label>
+          <label><input type="radio" name="modalidade" value="diaria"> Diária de 24 h</label>
+        </fieldset>
+        <label class="campo">Data de entrada <input type="date" id="data"></label>
+        <div class="duas">
+          <label class="campo">Entrada <input type="time" id="entrada" value="08:00"></label>
+          <label class="campo" id="campo-saida">Saída <input type="time" id="saida" value="10:00"></label> <!-- some na diária -->
+        </div>
+        <p class="erro" id="erro-periodo" hidden></p> <!-- mensagem de período inválido -->
+      </section>
+
+      <!-- Planta: as fileiras estão VAZIAS; o JavaScript cria as 34 vagas dentro delas -->
+      <section class="planta-box">
+        <div class="titulo-planta">
+          <div><h2>Escolha uma vaga</h2><p>Planta do estacionamento</p></div>
+          <span id="disponiveis"></span> <!-- "34 de 34 disponíveis" -->
+        </div>
+        <div class="legenda">
+          <span><i class="livre"></i>Disponível</span>
+          <span><i class="selecionada"></i>Selecionada</span>
+          <span><i class="reservada"></i>Reservada</span>
+          <span>♿ Acessível</span>
+        </div>
+        <div class="rolagem">
+          <div class="planta">
+            <div class="muro"></div>
+            <div class="fileira topo-f" id="fileira-topo"></div>
+            <div class="fileira meio-f" id="fileira-meio"></div>
+            <div class="fileira base-f" id="fileira-base"></div>
+            <div class="entrada"><span>←<small>Saída</small></span><span>→<small>Entrada</small></span></div>
+          </div>
+        </div>
+        <p class="legenda-fim">V1–V26: carros · M1–M6: motos · D1–D2: acessíveis</p>
+      </section>
+
+      <!-- Resumo: vaga, datas, duração e total (preenchidos pelo JavaScript) -->
+      <section class="resumo-box">
+        <h2>Confira sua reserva</h2>
+        <div class="vaga-escolhida"><span>Vaga selecionada</span><strong id="r-vaga"></strong><small id="r-tipo"></small></div>
+        <dl>
+          <div><dt>Entrada</dt><dd id="r-entrada"></dd></div>
+          <div><dt>Saída</dt><dd id="r-saida"></dd></div>
+          <div><dt>Duração</dt><dd id="r-duracao"></dd></div>
+          <div class="total"><dt>Total da reserva</dt><dd id="r-total"></dd></div>
+        </dl>
+        <button class="principal" id="continuar" disabled>Selecione uma vaga</button> <!-- liberado só com período e vaga válidos -->
+        <p class="aviso" id="aviso" role="status" hidden></p>                         <!-- mensagens de sucesso ou de vaga ocupada -->
+        <p class="nota" id="tarifas"></p>
+      </section>
+    </form>
+
+    <!-- ===== ETAPAS 2 e 3: o resumo à esquerda é o mesmo; à direita aparece o formulário de dados OU o de pagamento ===== -->
+    <section class="confirmar" id="tela-confirmar" hidden>
+      <button class="voltar" id="voltar" type="button">← Voltar</button>
+      <div class="duas-colunas">
+
+        <!-- Resumo lateral da reserva -->
+        <aside class="resumo-box">
+          <h2>Sua reserva</h2>
+          <div class="vaga-escolhida"><strong id="c-vaga"></strong><small id="c-tipo"></small></div>
+          <dl>
+            <div><dt>Modalidade</dt><dd id="c-mod"></dd></div>
+            <div><dt>Entrada</dt><dd id="c-entrada"></dd></div>
+            <div><dt>Saída</dt><dd id="c-saida"></dd></div>
+            <div id="c-cliente" hidden><dt>Cliente</dt><dd id="c-nome"></dd></div> <!-- só aparece na etapa 3 -->
+            <div class="total"><dt id="c-rotulo">Total da reserva</dt><dd id="c-total"></dd></div>
+          </dl>
+        </aside>
+
+        <!-- ETAPA 2: dados do cliente e do veículo. "novalidate": a validação é feita pelo nosso JavaScript -->
+        <form class="form-box" id="form-dados" novalidate>
+          <h2>Seus dados</h2>
+          <label class="campo">Nome completo <input id="nome" maxlength="120" autocomplete="name"></label>
+          <label class="campo">Telefone com DDD <input id="telefone" type="tel" maxlength="19" placeholder="(11) 99999-9999"></label>
+          <h2>Dados do veículo</h2>
+          <p class="nota" id="ajuda-tipo"></p>
+          <label class="campo">Placa <input id="placa" maxlength="9" placeholder="ABC1D23" autocomplete="off"></label>
+          <!-- Credencial: só aparece quando a vaga escolhida é acessível (D1 ou D2) -->
+          <label class="campo" id="campo-cred" hidden>Credencial da vaga acessível (JPG, PNG, WebP ou PDF, até 5 MB)
+            <input type="file" id="credencial" accept="image/jpeg,image/png,image/webp,application/pdf">
+          </label>
+          <p class="erro" id="erro-dados" hidden></p>
+          <button class="principal">Ir para pagamento</button>
+        </form>
+
+        <!-- ETAPA 3: forma de pagamento. O "value" de cada opção é a chave do objeto PAGAMENTOS no JavaScript -->
+        <form class="form-box" id="form-pagamento" novalidate hidden>
+          <fieldset class="pagamentos">
+            <legend>Forma de pagamento</legend>
+            <label><input type="radio" name="pagamento" value="cartao"> <b>Cartão de crédito</b> <small>Pagar no estacionamento</small></label>
+            <label><input type="radio" name="pagamento" value="google-wallet"> <b>Google Wallet</b> <small>Carteira digital</small></label>
+            <label><input type="radio" name="pagamento" value="pix"> <b>Pix</b> <small>Simular com QR Code</small></label>
+            <label><input type="radio" name="pagamento" value="dinheiro"> <b>Dinheiro</b> <small>Pagar no estacionamento</small></label>
+          </fieldset>
+          <h2 id="pg-titulo">Escolha uma opção acima</h2>
+          <p id="pg-texto">O total é o mesmo em todas as formas de pagamento.</p>
+          <img id="pix" src="image/pix-demonstracao.svg" width="180" height="180" alt="QR Code ilustrativo" hidden> <!-- só no Pix -->
+          <p class="nota">Ambiente de demonstração: nenhuma cobrança real é realizada.</p>
+          <button class="principal" id="pagar" disabled>Confirmar reserva</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== MINHAS RESERVAS: a lista é desenhada pelo JavaScript dentro de #lista ===== -->
+    <section class="minhas" id="minhas">
+      <div class="titulo-minhas">
+        <h2>Minhas reservas <span id="contador">0</span></h2> <!-- quantidade de reservas ativas -->
+        <button class="botao" id="limpar" type="button">Limpar reservas</button>
+      </div>
+      <div id="lista"></div>
+    </section>
+  </main>
+
+  <!-- RODAPÉ: <details> abre e fecha ao clicar, sem precisar de JavaScript -->
+  <footer class="rodape miolo">
+    <span>Projeto de gerenciamento de estacionamento</span>
+    <details><summary>Equipe do projeto</summary>
+      <ul>
+        <li>Paulo Henrique Alves de Almeida</li>
+        <li>Matheus Avanzo dos Santos</li>
+        <li>Murilo Roselini</li>
+        <li>Petterson Augusto Papa de Souza</li>
+        <li>Raphael Souza Araujo Barbosa</li>
+      </ul>
+    </details>
+  </footer>
+
+  <!-- JANELA DE SAÍDA: <dialog> é uma janela nativa; o JavaScript a abre com showModal().
+       method="dialog" faz a janela fechar sozinha ao enviar o formulário. -->
+  <dialog id="modal-saida">
+    <h2 id="titulo-saida">Simular saída</h2>
+    <p id="texto-saida"></p>
+    <form id="form-saida" method="dialog">
+      <label class="campo">Data e hora de saída <input type="datetime-local" id="saida-real"></label>
+      <p class="erro" id="erro-saida" hidden></p>
+      <div id="resultado-saida"></div> <!-- cálculo da taxa de atraso -->
+      <div class="acoes"><button class="botao" type="button" id="fechar-saida">Fechar</button><button class="principal">Encerrar reserva</button></div>
+    </form>
+  </dialog>
+</body>
+</html>

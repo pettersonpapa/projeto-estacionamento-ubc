@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="196" height="196" viewBox="0 0 196 196" role="img" aria-labelledby="pix-title pix-desc">
+  <title id="pix-title">Pix ilustrativo do ParkingHub</title>
+  <desc id="pix-desc">Composição gráfica em preto e laranja que representa um QR Code. Apenas visual, sem dados codificados ou função de leitura.</desc>
+  <rect width="196" height="196" fill="#f5f6f8"/>
+  <g fill="none" stroke="#171b1f" stroke-width="7">
+    <rect x="19.5" y="19.5" width="33" height="33" rx="5"/>
+    <rect x="143.5" y="19.5" width="33" height="33" rx="5"/>
+    <rect x="19.5" y="143.5" width="33" height="33" rx="5"/>
+  </g>
+  <g fill="#171b1f">
+    <rect x="30" y="30" width="12" height="12" rx="3"/>
+    <rect x="154" y="30" width="12" height="12" rx="3"/>
+    <rect x="30" y="154" width="12" height="12" rx="3"/>
+    <path d="M68 16h8v20h-8zM96 16h20v8H96zM124 16h8v32h-8zM82 30h8v20h-8zM102 38h16v8h-16zM68 58h22v8H68zM102 58h8v8h-8zM124 58h8v16h-8zM16 72h8v20h-8zM32 66h20v8H32zM42 84h24v8H42zM30 100h8v20h-8zM48 104h18v8H48zM16 120h8v10h-8zM48 122h18v8H48zM140 66h8v24h-8zM156 70h24v8h-24zM158 92h8v20h-8zM172 92h8v8h-8zM138 106h8v24h-8zM160 122h20v8h-20zM72 138h16v8H72zM100 136h8v22h-8zM118 142h16v8h-16zM70 156h8v24h-8zM84 164h8v16h-8zM102 172h30v8h-30zM118 156h8v8h-8zM144 144h8v20h-8zM160 140h20v8h-20zM162 158h8v22h-8zM176 164h8v16h-8z"/>
+  </g>
+  <g fill="#ff7b29">
+    <rect x="102" y="28" width="8" height="8" rx="1.5"/>
+    <rect x="58" y="68" width="8" height="8" rx="1.5"/>
+    <rect x="170" y="108" width="10" height="8" rx="1.5"/>
+    <rect x="84" y="150" width="8" height="8" rx="1.5"/>
+    <rect x="138" y="172" width="14" height="8" rx="1.5"/>
+    <rect x="76" y="76" width="44" height="44" rx="6"/>
+  </g>
+  <path d="M86 91h24m-6-6 6 6-6 6M110 105H86m6-6-6 6 6 6" fill="none" stroke="#171b1f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
