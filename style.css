@@ -123,7 +123,7 @@ legend { font-size: 14px; padding: 0; margin-bottom: 4px; }
 .vaga.moto { flex-direction: row; }
 .vaga.acessivel { color: var(--azul); }
 .vaga:enabled:hover { background: var(--destaque-suave); outline: 2px solid var(--destaque); outline-offset: -2px; }  /* destaque ao passar o mouse */
-.vaga.selecionada { background: var(--destaque); color: var(--sobre-destaque); }                                   /* vaga escolhida: laranja */
+.vaga.selecionada, .vaga.selecionada:enabled:hover { background: var(--destaque); color: var(--sobre-destaque); }  /* vaga escolhida: laranja (também com o mouse em cima) */
 .vaga:disabled { background: var(--reservada); color: var(--secundario); cursor: not-allowed; }                   /* reservada ou sem período válido: cinza */
 /* Setas de entrada e saída desenhadas na lateral da planta. */
 .entrada { position: absolute; left: 2%; top: 35%; width: 9%; height: 32%; border-right: 2px dashed var(--marcacao); display: flex; flex-direction: column; justify-content: space-around; text-align: center; color: var(--secundario); font: 32px/1 var(--fonte-titulo); }
@@ -141,7 +141,7 @@ dd { margin: 0; font-weight: 600; text-align: right; }
 
 /* ---------- Etapas 2 e 3: resumo à esquerda e formulário à direita ---------- */
 .duas-colunas { display: grid; grid-template-columns: 344px minmax(0, 560px); gap: 32px; align-items: start; }
-.duas-colunas .resumo-box { padding-top: 0; border: 0; }
+.duas-colunas .resumo-box { grid-area: auto; padding-top: 0; border: 0; }  /* "grid-area: auto" cancela a área da etapa 1, que não existe nesta grade */
 .form-box { background: var(--superficie); border: 1px solid var(--borda); padding: 24px; }
 .form-box h2 { margin-top: 20px; }
 .form-box h2:first-child { margin-top: 0; }
