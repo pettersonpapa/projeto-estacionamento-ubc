@@ -4,6 +4,7 @@
 const VALOR_HORA = 8;        // tarifas de exemplo, em reais
 const VALOR_DIARIA = 35;
 const MS_POR_HORA = 3600000; // o JavaScript guarda datas em milissegundos: 1 hora = 3.600.000 ms
+const FUSO_BRASIL = "-03:00"; // horário de Brasília: 3 horas atrás do horário mundial (UTC). O Brasil não tem mais horário de verão.
 
 let vagas = [];            // as 34 vagas: cada uma é { codigo, tipo, botao }
 let reservas = [];         // todas as reservas feitas
@@ -20,7 +21,10 @@ function salvarReservas() {
 
 function pegar(id) { return document.getElementById(id); } // atalho: pegar("nome") acha o elemento com id="nome"
 function moeda(valor) { return "R$ " + valor.toFixed(2).replace(".", ","); }  // 16 -> "R$ 16,00"
-function dataHora(ms) { return new Date(ms).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }); }
+function dataHora(ms) {  // escreve a data e a hora no formato do Brasil, sempre no horário de Brasília
+  return new Date(ms).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Sao_Paulo" });
+}
+function doisDigitos(numero) { if (numero < 10) return "0" + numero; return "" + numero; } // coloca o zero na frente: 5 vira "05"
 function ehDiaria() { return document.querySelector('input[name="modalidade"]:checked').value == "diaria"; }
 function icone(nome) { return '<svg class="icone-svg"><use href="#icone-' + nome + '"/></svg>'; } // desenhos do index.html
 
@@ -66,8 +70,9 @@ criarCarros(pegar("fileira-base"), 21, 26);
 // Lê a data e os horários e devolve { inicio, fim, valor }. Devolve null se estiver inválido.
 function calcularPeriodo() {
   const dia = pegar("data").value;
-  const inicio = new Date(dia + "T" + pegar("entrada").value).getTime();
-  const fim = ehDiaria() ? inicio + 24 * MS_POR_HORA : new Date(dia + "T" + pegar("saida").value).getTime();
+  // Juntamos data + hora + fuso (ex.: "2026-10-26T08:00:00-03:00") para o horário ser sempre o de Brasília.
+  const inicio = new Date(dia + "T" + pegar("entrada").value + ":00" + FUSO_BRASIL).getTime();
+  const fim = ehDiaria() ? inicio + 24 * MS_POR_HORA : new Date(dia + "T" + pegar("saida").value + ":00" + FUSO_BRASIL).getTime();
   if (isNaN(inicio) || isNaN(fim) || fim <= inicio) return null;  // isNaN = "não é número" (data vazia)
 
   let valor = VALOR_DIARIA;
@@ -299,14 +304,18 @@ pegar("tema").onclick = function () {
   document.body.classList.toggle("escuro");
 };
 
-// A data já começa em hoje (formato AAAA-MM-DD), assim o período é válido e a planta não fica bloqueada.
-const hoje = new Date();
-let mes = hoje.getMonth() + 1;  // os meses começam em 0 (janeiro = 0), por isso somamos 1
-let dia = hoje.getDate();
-if (mes < 10) mes = "0" + mes;  // coloca o zero na frente: 5 vira "05"
-if (dia < 10) dia = "0" + dia;
-pegar("data").value = hoje.getFullYear() + "-" + mes + "-" + dia;
-pegar("tarifas").textContent = "Valores de exemplo: " + moeda(VALOR_HORA) + " por hora ou " + moeda(VALOR_DIARIA) + " pela diária.";
+// O formulário já começa com a data e a hora de agora no Brasil, assim o período é válido e a planta não fica bloqueada.
+// Para achar a hora de Brasília, tiramos 3 horas do relógio mundial (UTC) e lemos o resultado com os métodos "getUTC...".
+const agora = new Date(Date.now() - 3 * MS_POR_HORA);
+const horaAtual = agora.getUTCHours();
+pegar("data").value = agora.getUTCFullYear() + "-" + doisDigitos(agora.getUTCMonth() + 1) + "-" + doisDigitos(agora.getUTCDate()); // os meses começam em 0, por isso o +1
+pegar("entrada").value = doisDigitos(horaAtual) + ":00";   // entrada na hora cheia atual
+if (horaAtual < 22) {
+  pegar("saida").value = doisDigitos(horaAtual + 2) + ":00";  // saída 2 horas depois
+} else {
+  pegar("saida").value = "23:59";                         // perto da meia-noite: a saída fica no fim do mesmo dia
+}
+pegar("tarifas").textContent = "Valores de exemplo: " + moeda(VALOR_HORA) + " por hora ou " + moeda(VALOR_DIARIA) + " pela diária. Todos os horários seguem o horário de Brasília.";
 
 mostrarEtapa(1);   // começa na etapa 1
 atualizar();       // desenha a planta e o resumo

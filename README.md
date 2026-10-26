@@ -38,6 +38,7 @@ Foi feito **apenas com HTML, CSS e JavaScript**, sem frameworks, sem servidor e 
 - **Validações:** nome e sobrenome, telefone com DDD (só números) e placa de 7 caracteres.
 - **Pagamento simulado:** cartão e dinheiro ficam pendentes (pagos no local); Google Wallet e Pix são simulados, com QR Code ilustrativo.
 - **Minhas reservas:** lista das reservas, com opção de cancelar (a vaga volta a ficar livre).
+- **Horário de Brasília:** datas e horas sempre no fuso do Brasil (UTC-3), e o formulário já abre com a data e a hora de agora.
 - **Tema claro e escuro**, com botão no cabeçalho.
 - **Responsivo:** funciona no computador e no celular.
 
