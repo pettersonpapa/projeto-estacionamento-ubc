@@ -31,7 +31,10 @@
         <span class="logo"><img src="image/logo-provisoria.jpeg" alt="Logo"></span>
         <span>ParkingHub<small>Reserva de vagas</small></span>
       </a>
-      <button class="icone" id="tema" type="button" aria-label="Alternar tema"><svg class="icone-svg" aria-hidden="true"><use href="#icone-lua"/></svg></button> <!-- o ícone (lua ou sol) é trocado pelo JavaScript -->
+      <!-- Botão de tema: tem os dois ícones e o CSS mostra só um (sol no tema escuro, lua no claro) -->
+      <button class="icone" id="tema" type="button" aria-label="Alternar tema">
+        <svg class="icone-svg icone-sol"><use href="#icone-sol"/></svg><svg class="icone-svg icone-lua"><use href="#icone-lua"/></svg>
+      </button>
     </div>
   </header>
 
@@ -59,7 +62,7 @@
           <label class="campo">Entrada <input type="time" id="entrada" value="08:00"></label>
           <label class="campo" id="campo-saida">Saída <input type="time" id="saida" value="10:00"></label> <!-- some na diária -->
         </div>
-        <p class="erro" id="erro-periodo" hidden></p> <!-- mensagem de período inválido -->
+        <p class="erro" id="erro-periodo" hidden>Confira a data e os horários: a saída precisa ser depois da entrada.</p> <!-- aparece quando o período é inválido -->
       </section>
 
       <!-- Planta: as fileiras estão VAZIAS; o JavaScript cria as 34 vagas dentro delas -->
@@ -116,7 +119,7 @@
             <div><dt>Entrada</dt><dd id="c-entrada"></dd></div>
             <div><dt>Saída</dt><dd id="c-saida"></dd></div>
             <div id="c-cliente" hidden><dt>Cliente</dt><dd id="c-nome"></dd></div> <!-- só aparece na etapa 3 -->
-            <div class="total"><dt id="c-rotulo">Total da reserva</dt><dd id="c-total"></dd></div>
+            <div class="total"><dt>Total da reserva</dt><dd id="c-total"></dd></div>
           </dl>
         </aside>
 
@@ -124,19 +127,14 @@
         <form class="form-box" id="form-dados" novalidate>
           <h2>Seus dados</h2>
           <label class="campo">Nome completo <input id="nome" maxlength="120" autocomplete="name"></label>
-          <label class="campo">Telefone com DDD <input id="telefone" type="tel" maxlength="19" placeholder="(11) 99999-9999"></label>
+          <label class="campo">Telefone com DDD (só números) <input id="telefone" type="tel" maxlength="11" placeholder="11999998888"></label>
           <h2>Dados do veículo</h2>
-          <p class="nota" id="ajuda-tipo"></p>
-          <label class="campo">Placa <input id="placa" maxlength="9" placeholder="ABC1D23" autocomplete="off"></label>
-          <!-- Credencial: só aparece quando a vaga escolhida é acessível (D1 ou D2) -->
-          <label class="campo" id="campo-cred" hidden>Credencial da vaga acessível (JPG, PNG, WebP ou PDF, até 5 MB)
-            <input type="file" id="credencial" accept="image/jpeg,image/png,image/webp,application/pdf">
-          </label>
+          <label class="campo">Placa (7 caracteres) <input id="placa" maxlength="7" placeholder="ABC1D23" autocomplete="off"></label>
           <p class="erro" id="erro-dados" hidden></p>
           <button class="principal">Ir para pagamento</button>
         </form>
 
-        <!-- ETAPA 3: forma de pagamento. O "value" de cada opção é a chave do objeto PAGAMENTOS no JavaScript -->
+        <!-- ETAPA 3: forma de pagamento (o JavaScript lê qual opção está marcada) -->
         <form class="form-box" id="form-pagamento" novalidate hidden>
           <fieldset class="pagamentos">
             <legend>Forma de pagamento</legend>
@@ -158,7 +156,6 @@
     <section class="minhas" id="minhas">
       <div class="titulo-minhas">
         <h2>Minhas reservas <span id="contador">0</span></h2> <!-- quantidade de reservas ativas -->
-        <button class="botao" id="limpar" type="button">Limpar reservas</button>
       </div>
       <div id="lista"></div>
     </section>
@@ -177,18 +174,5 @@
       </ul>
     </details>
   </footer>
-
-  <!-- JANELA DE SAÍDA: <dialog> é uma janela nativa; o JavaScript a abre com showModal().
-       method="dialog" faz a janela fechar sozinha ao enviar o formulário. -->
-  <dialog id="modal-saida">
-    <h2 id="titulo-saida">Simular saída</h2>
-    <p id="texto-saida"></p>
-    <form id="form-saida" method="dialog">
-      <label class="campo">Data e hora de saída <input type="datetime-local" id="saida-real"></label>
-      <p class="erro" id="erro-saida" hidden></p>
-      <div id="resultado-saida"></div> <!-- cálculo da taxa de atraso -->
-      <div class="acoes"><button class="botao" type="button" id="fechar-saida">Fechar</button><button class="principal">Encerrar reserva</button></div>
-    </form>
-  </dialog>
 </body>
 </html>

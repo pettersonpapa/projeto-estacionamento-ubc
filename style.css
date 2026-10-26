@@ -65,6 +65,7 @@ button { cursor: pointer; }
 /* Ícones SVG: desenhados só com traço, que usa a cor do texto (currentColor). Os desenhos ficam no index.html. */
 .icone-svg { width: 19px; height: 19px; flex: 0 0 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .icone .icone-svg { width: 24px; height: 24px; }                                                   /* ícone do tema, no cabeçalho */
+:root[data-tema="claro"] .icone-sol, :root[data-tema="escuro"] .icone-lua { display: none; }       /* mostra só um dos dois ícones do botão de tema */
 .vaga.acessivel .icone-svg { width: 25px; height: 25px; flex-basis: 25px; }                        /* vaga acessível: ícone maior, na cor azul da vaga */
 .legenda .icone-svg { width: 17px; height: 17px; flex-basis: 17px; color: var(--azul); vertical-align: -4px; }  /* legenda */
 
@@ -153,19 +154,13 @@ dd { margin: 0; font-weight: 600; text-align: right; }
 .minhas { margin-top: 40px; }
 .titulo-minhas { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 #contador { background: var(--superficie); border: 1px solid var(--borda); padding: 2px 8px; font: 14px var(--fonte-texto); }
-.recibo { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px; margin-bottom: 8px; background: var(--superficie); border: 1px solid var(--borda); }
-.recibo > div { display: flex; gap: 16px; align-items: center; }
+/* Cada reserva é uma caixa com o código da vaga, os detalhes e o botão de cancelar. */
+.recibo { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 16px; margin-bottom: 8px; background: var(--superficie); border: 1px solid var(--borda); }
+.recibo p { flex: 1; min-width: 220px; }
 .recibo strong.codigo { font: 600 28px var(--fonte-titulo); color: var(--destaque); min-width: 56px; }  /* código da vaga em laranja */
-.recibo small { display: block; color: var(--secundario); }
-.recibo .acoes button { margin-left: 8px; }
 
-/* ---------- Rodapé e janela de saída ---------- */
+/* ---------- Rodapé ---------- */
 .rodape { padding: 20px 0 32px; border-top: 1px solid var(--borda); color: var(--secundario); font-size: 14px; }
-dialog { max-width: 440px; width: calc(100% - 32px); padding: 24px; border: 1px solid var(--borda); background: var(--superficie); color: var(--texto); }
-dialog::backdrop { background: #0008; }  /* escurece o fundo atrás da janela */
-.acoes { display: flex; gap: 8px; }
-.acoes .principal, .acoes .botao { margin-top: 16px; }
-#resultado-saida p { display: flex; justify-content: space-between; margin-top: 6px; }
 
 /* ---------- Telas menores (até 1000 px): tudo em uma coluna ---------- */
 @media (max-width: 1000px) {

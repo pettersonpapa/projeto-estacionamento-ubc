@@ -25,7 +25,7 @@
 
 O **ParkingHub** é um projeto acadêmico de gerenciamento de estacionamento. A pessoa escolhe o período, clica em uma vaga na planta do estacionamento, informa seus dados e escolhe a forma de pagamento. Depois acompanha, cancela ou encerra a reserva.
 
-Foi feito **apenas com HTML, CSS e JavaScript**, sem frameworks, sem servidor e sem instalar nada. As reservas ficam salvas no próprio navegador (`localStorage`). Todo o código está em português e comentado, para facilitar o estudo.
+Foi feito **apenas com HTML, CSS e JavaScript**, sem frameworks, sem servidor e sem instalar nada. As reservas ficam salvas no próprio navegador (`localStorage`). Todo o código está em português, em um estilo simples e comentado, para facilitar o estudo.
 
 > Projeto demonstrativo: nenhuma cobrança real é realizada e a logo é provisória.
 
@@ -35,9 +35,9 @@ Foi feito **apenas com HTML, CSS e JavaScript**, sem frameworks, sem servidor e 
 - **Duas modalidades:** por horário ou diária de 24 horas.
 - **Sem reservas duplicadas:** uma vaga ocupada fica bloqueada nos horários que se sobrepõem, e a mesma placa não pode ter duas reservas ao mesmo tempo.
 - **Reserva em 3 etapas:** vaga e período, seus dados e pagamento. A reserva só é criada no último passo.
-- **Validações:** nome completo, telefone com DDD, placa (padrão antigo e Mercosul) e credencial anexada para vagas acessíveis.
+- **Validações:** nome e sobrenome, telefone com DDD (só números) e placa de 7 caracteres.
 - **Pagamento simulado:** cartão e dinheiro ficam pendentes (pagos no local); Google Wallet e Pix são simulados, com QR Code ilustrativo.
-- **Minhas reservas:** cancelar e simular a saída, com cobrança de hora extra por atraso.
+- **Minhas reservas:** lista das reservas, com opção de cancelar (a vaga volta a ficar livre).
 - **Tema claro e escuro**, que acompanha o sistema operacional.
 - **Responsivo:** funciona no computador e no celular.
 
@@ -53,16 +53,16 @@ Não é preciso instalar nada.
 
 ## Tarifas
 
-Valores de exemplo, definidos em uma única constante no início do `script.js`:
+Valores de exemplo, definidos no início do `script.js`:
 
 | Item | Valor |
 |---|---|
 | Hora | R$ 8,00 (hora iniciada conta como hora inteira) |
 | Diária (24 h) | R$ 35,00 |
-| Hora excedente na saída | R$ 5,00 por hora iniciada |
 
 ```js
-const TARIFAS = { hora: 8, diaria: 35, horaExtra: 5 };
+const VALOR_HORA = 8;
+const VALOR_DIARIA = 35;
 ```
 
 ## Estrutura do repositório
@@ -84,15 +84,16 @@ projeto-estacionamento-ubc/
 
 | Arquivo | Papel |
 |---|---|
-| `index.html` | Estrutura da página: formulários, planta, lista de reservas e janela de saída. |
+| `index.html` | Estrutura da página: formulários, planta e lista de reservas. |
 | `style.css` | Aparência: temas por variáveis de cor, planta com CSS Grid e layout responsivo. |
-| `script.js` | Regras: cálculo do valor, conflito de horários, validações, pagamento e `localStorage`. |
+| `script.js` | Regras: cálculo do valor, conflito de horários, validações, pagamento e `localStorage`. Cerca de 300 linhas, com comentários. |
 
 A regra central é a de **sobreposição de períodos**: duas reservas conflitam quando cada uma começa antes de a outra terminar.
 
 ```js
-reservas.some(reserva => reserva.status == "ativa" && reserva[campo] == valor
-                      && periodoAtual.inicio < reserva.fim && periodoAtual.fim > reserva.inicio);
+if (reserva.status == "ativa" && reserva[campo] == valor) {
+  if (periodo.inicio < reserva.fim && periodo.fim > reserva.inicio) return true;
+}
 ```
 
 ## Documentação
@@ -104,7 +105,6 @@ reservas.some(reserva => reserva.status == "ativa" && reserva[campo] == valor
 
 - Não há servidor nem banco de dados: os dados existem só no navegador de quem usou.
 - O pagamento é totalmente simulado.
-- A credencial da vaga acessível é conferida só por tipo e tamanho, não é enviada nem guardada, e sua autenticidade não é verificada.
 
 ## Equipe
 
