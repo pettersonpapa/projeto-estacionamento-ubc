@@ -38,7 +38,7 @@ Foi feito **apenas com HTML, CSS e JavaScript**, sem frameworks, sem servidor e 
 - **Validações:** nome e sobrenome, telefone com DDD (só números) e placa de 7 caracteres.
 - **Pagamento simulado:** cartão e dinheiro ficam pendentes (pagos no local); Google Wallet e Pix são simulados, com QR Code ilustrativo.
 - **Minhas reservas:** lista das reservas, com opção de cancelar (a vaga volta a ficar livre).
-- **Tema claro e escuro**, que acompanha o sistema operacional.
+- **Tema claro e escuro**, com botão no cabeçalho.
 - **Responsivo:** funciona no computador e no celular.
 
 ## Como executar
@@ -85,8 +85,8 @@ projeto-estacionamento-ubc/
 | Arquivo | Papel |
 |---|---|
 | `index.html` | Estrutura da página: formulários, planta e lista de reservas. |
-| `style.css` | Aparência: temas por variáveis de cor, planta com CSS Grid e layout responsivo. |
-| `script.js` | Regras: cálculo do valor, conflito de horários, validações, pagamento e `localStorage`. Cerca de 300 linhas, com comentários. |
+| `style.css` | Aparência: temas por variáveis de cor, planta com flexbox e layout responsivo. |
+| `script.js` | Regras: cálculo do valor, conflito de horários, validações, pagamento e `localStorage`. Cerca de 310 linhas, com comentários. |
 
 A regra central é a de **sobreposição de períodos**: duas reservas conflitam quando cada uma começa antes de a outra terminar.
 

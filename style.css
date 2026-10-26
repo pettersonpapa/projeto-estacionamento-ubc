@@ -1,171 +1,587 @@
-/* ParkingHub - aparência do sistema (versão simples).
-   O CSS só cuida do visual: o JavaScript liga e desliga classes e atributos, e as regras abaixo reagem a eles. */
+/* ParkingHub - aparência do sistema (versão simples)
+   O CSS cuida só do visual. O JavaScript liga e desliga classes e atributos,
+   e as regras abaixo reagem a eles. */
 
-/* Fontes locais (pasta fonts): Source Sans 3 para o texto e Barlow para os títulos. */
-@font-face { font-family: "Source Sans 3"; src: url("fonts/SourceSans3-Variable.ttf"); font-weight: 200 900; }
-@font-face { font-family: "Barlow"; src: url("fonts/Barlow-SemiBold.ttf"); font-weight: 600; }
+/* ---------- Fontes (arquivos da pasta fonts) ---------- */
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("fonts/SourceSans3-Variable.ttf");
+}
+@font-face {
+  font-family: "Barlow";
+  src: url("fonts/Barlow-SemiBold.ttf");
+}
 
-/* Cores do tema claro, guardadas em variáveis (usadas com var(--nome)).
-   Mudar uma cor aqui muda o site inteiro. */
+/* ---------- Cores ----------
+   As cores ficam guardadas em variáveis (--nome) e são usadas com var(--nome).
+   Para mudar uma cor do site inteiro, basta mudar aqui. */
 :root {
-  --fundo: #f5f6f7;            /* fundo da página */
-  --superficie: #fff;          /* fundo de cartões, campos e botões */
-  --suave: #e9ecef;            /* cinza claro de apoio */
-  --texto: #191d21;            /* cor do texto principal */
-  --secundario: #505c66;       /* cor de textos de apoio */
-  --borda: #cdd3d8;            /* cor das bordas */
-  --destaque: #c44100;         /* laranja da marca */
-  --destaque-suave: #fff1e7;   /* laranja bem claro (fundos de destaque) */
-  --sobre-destaque: #fff;      /* cor do texto sobre o laranja */
-  --piso: #e9ecef;             /* piso do estacionamento */
-  --marcacao: #77838e;         /* linhas desenhadas na planta */
-  --reservada: #d6dadd;        /* cinza das vagas reservadas */
-  --azul: #24669a;             /* azul das vagas acessíveis */
-  --vermelho: #ab3522;         /* mensagens de erro */
-  --cabecalho: #e9eaec;        /* fundo do cabeçalho */
-  --cabecalho-texto: #17191c;  /* texto do cabeçalho */
-  --fonte-texto: "Source Sans 3", "Segoe UI", sans-serif;
-  --fonte-titulo: "Barlow", "Segoe UI", sans-serif;
+  --fundo: #f5f6f7;           /* fundo da página */
+  --superficie: #ffffff;      /* fundo de cartões, campos e botões */
+  --suave: #e9ecef;           /* cinza de apoio */
+  --texto: #191d21;           /* texto principal */
+  --secundario: #505c66;      /* texto de apoio */
+  --borda: #cdd3d8;           /* bordas */
+  --destaque: #c44100;        /* laranja da marca */
+  --destaque-suave: #fff1e7;  /* laranja bem claro */
+  --sobre-destaque: #ffffff;  /* texto sobre o laranja */
+  --piso: #e9ecef;            /* piso do estacionamento */
+  --marcacao: #77838e;        /* linhas da planta */
+  --reservada: #d6dadd;       /* vagas reservadas */
+  --azul: #24669a;            /* vagas acessíveis */
+  --vermelho: #ab3522;        /* mensagens de erro */
+  --fonte-texto: "Source Sans 3", Arial, sans-serif;
+  --fonte-titulo: "Barlow", Arial, sans-serif;
 }
 
-/* Tema escuro: só REDEFINE as mesmas variáveis. Vale quando o elemento raiz tem data-tema="escuro"
-   (o JavaScript escreve esse atributo no botão de tema). */
-:root[data-tema="escuro"] {
-  color-scheme: dark;
-  --fundo: #101214; --superficie: #16191c; --suave: #242a30; --texto: #f0f1f2; --secundario: #b0bac3;
-  --borda: #343b42; --destaque: #ff7b29; --destaque-suave: #35251b; --sobre-destaque: #101214;
-  --piso: #0c0f11; --reservada: #323940; --azul: #88bce8; --vermelho: #ffb0a0;
-  --cabecalho: #000; --cabecalho-texto: #fff;
+/* Tema escuro: quando o <body> ganha a classe "escuro" (o JavaScript faz isso),
+   as mesmas variáveis passam a ter cores escuras. */
+body.escuro {
+  --fundo: #101214;
+  --superficie: #16191c;
+  --suave: #242a30;
+  --texto: #f0f1f2;
+  --secundario: #b0bac3;
+  --borda: #343b42;
+  --destaque: #ff7b29;
+  --destaque-suave: #35251b;
+  --sobre-destaque: #101214;
+  --piso: #0c0f11;
+  --reservada: #323940;
+  --azul: #88bce8;
+  --vermelho: #ffb0a0;
 }
 
-/* ---------- Estilos base ---------- */
-* { box-sizing: border-box; }  /* largura e altura incluem borda e espaçamento interno */
-body { margin: 0; background: var(--fundo); color: var(--texto); font: 16px/1.5 var(--fonte-texto); }
-h1, h2, p, dl { margin: 0; }
-h1, h2 { font-family: var(--fonte-titulo); font-weight: 600; }
-h1 { font-size: 36px; line-height: 1.15; }
-h2 { font-size: 22px; }
-button, input, select { font: inherit; }  /* campos usam a mesma fonte da página */
-button { cursor: pointer; }
-[hidden] { display: none !important; }    /* qualquer elemento com o atributo "hidden" some de verdade */
-.miolo { width: min(1440px, calc(100% - 64px)); margin: 0 auto; }  /* limita a largura e centraliza o conteúdo */
-.pagina { padding: 28px 0 32px; }
-.sub { color: var(--secundario); font-size: 15px; margin: 4px 0 20px; }
+/* ---------- Estilos gerais ---------- */
+* {
+  box-sizing: border-box;  /* largura e altura incluem borda e espaçamento interno */
+}
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-texto);
+  font-size: 16px;
+  line-height: 1.5;
+}
+h1, h2, p, dl {
+  margin: 0;
+}
+h1, h2 {
+  font-family: var(--fonte-titulo);
+}
+h1 {
+  font-size: 36px;
+}
+h2 {
+  font-size: 22px;
+}
+button, input, select {
+  font-family: inherit;  /* campos usam a mesma fonte da página */
+  font-size: inherit;
+}
+button {
+  cursor: pointer;
+}
+[hidden] {
+  display: none !important;  /* quem tem o atributo "hidden" some de verdade */
+}
 
-/* ---------- Cabeçalho ---------- */
-.topo { background: var(--cabecalho); color: var(--cabecalho-texto); border-bottom: 1px solid var(--borda); padding: 8px 0; }
-.topo .miolo { display: flex; justify-content: space-between; align-items: center; }  /* marca à esquerda, tema à direita */
-.marca { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; font: 600 21px/1.3 var(--fonte-titulo); }
-.marca small { display: block; font: 12px var(--fonte-texto); opacity: .7; }
-/* A logo é uma imagem maior dentro de uma caixa de 60 px que recorta só o símbolo. */
-.logo { width: 60px; height: 60px; overflow: hidden; position: relative; }
-.logo img { position: absolute; width: 112px; left: -26px; top: -24px; filter: url("#logo-claro"); }  /* filtro do SVG no HTML (tema claro) */
-:root[data-tema="escuro"] .logo img { filter: none; }
-.icone { width: 44px; height: 44px; border: 0; background: none; color: inherit; display: inline-flex; align-items: center; justify-content: center; }
-/* Ícones SVG: desenhados só com traço, que usa a cor do texto (currentColor). Os desenhos ficam no index.html. */
-.icone-svg { width: 19px; height: 19px; flex: 0 0 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-.icone .icone-svg { width: 24px; height: 24px; }                                                   /* ícone do tema, no cabeçalho */
-:root[data-tema="claro"] .icone-sol, :root[data-tema="escuro"] .icone-lua { display: none; }       /* mostra só um dos dois ícones do botão de tema */
-.vaga.acessivel .icone-svg { width: 25px; height: 25px; flex-basis: 25px; }                        /* vaga acessível: ícone maior, na cor azul da vaga */
-.legenda .icone-svg { width: 17px; height: 17px; flex-basis: 17px; color: var(--azul); vertical-align: -4px; }  /* legenda */
+/* Caixa central que limita a largura do conteúdo */
+.miolo {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.pagina {
+  padding-top: 28px;
+  padding-bottom: 32px;
+}
+.sub {
+  color: var(--secundario);
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
 
-/* ---------- Barra de etapas (os números 1., 2., 3. são gerados automaticamente) ---------- */
-.etapas { display: flex; gap: 8px; padding: 0; margin: 0 0 24px; list-style: none; counter-reset: etapa; }
-.etapas li { counter-increment: etapa; flex: 1; padding: 8px 0; border-top: 3px solid var(--borda); color: var(--secundario); font-size: 14px; }
-.etapas li::before { content: counter(etapa) ". "; }
-.etapas .atual { border-color: var(--destaque); color: var(--texto); font-weight: 600; }  /* etapa em andamento */
-.etapas .feito { border-color: var(--texto); }                                            /* etapas já concluídas */
+/* ---------- Cabeçalho (sempre escuro) ---------- */
+.topo {
+  background: #000000;
+  color: #ffffff;
+  padding: 8px 0;
+}
+.topo .miolo {
+  display: flex;                    /* itens lado a lado */
+  justify-content: space-between;   /* um à esquerda, outro à direita */
+  align-items: center;              /* alinhados ao meio */
+}
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: var(--fonte-titulo);
+  font-size: 21px;
+}
+.marca small {
+  display: block;
+  font-family: var(--fonte-texto);
+  font-size: 12px;
+  opacity: 0.7;
+}
+.logo {
+  height: 64px;
+}
+
+/* Botão de tema e ícones */
+.icone {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: #ffffff;
+}
+.icone-svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  fill: none;                /* só contorno, sem preenchimento */
+  stroke: currentColor;      /* cor do traço = cor do texto ao redor */
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icone .icone-svg {
+  width: 24px;
+  height: 24px;
+}
+.icone-sol {
+  display: none;             /* no tema claro mostra a lua */
+}
+body.escuro .icone-sol {
+  display: inline;           /* no tema escuro mostra o sol */
+}
+body.escuro .icone-lua {
+  display: none;
+}
+.legenda .icone-svg {
+  color: var(--azul);
+  vertical-align: -4px;
+}
+.vaga.acessivel .icone-svg {
+  width: 25px;
+  height: 25px;
+}
+
+/* ---------- Barra de etapas ---------- */
+.etapas {
+  display: flex;
+  gap: 8px;
+  padding: 0;
+  margin: 0 0 24px 0;
+  list-style: none;
+}
+.etapas li {
+  flex: 1;                              /* as 3 etapas dividem o espaço igualmente */
+  padding: 8px 0;
+  border-top: 3px solid var(--borda);
+  color: var(--secundario);
+  font-size: 14px;
+}
+.etapas .atual {                        /* etapa em andamento */
+  border-color: var(--destaque);
+  color: var(--texto);
+  font-weight: bold;
+}
+.etapas .feito {                        /* etapas já concluídas */
+  border-color: var(--texto);
+}
 
 /* ---------- Campos, botões e mensagens ---------- */
-.campo { display: flex; flex-direction: column; gap: 4px; margin-top: 14px; font-size: 14px; }  /* rótulo em cima, campo embaixo */
-input, select { padding: 9px 10px; border: 1px solid var(--secundario); border-radius: 3px; background: var(--superficie); color: inherit; }
-fieldset { border: 0; padding: 0; margin: 14px 0 0; }
-legend { font-size: 14px; padding: 0; margin-bottom: 4px; }
-.modo label { margin-right: 16px; }
-.duas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }  /* dois campos lado a lado */
-.principal { width: 100%; margin-top: 16px; padding: 12px; border: 0; border-radius: 3px; background: var(--destaque); color: var(--sobre-destaque); font-weight: 600; }
-.principal:hover:enabled { filter: brightness(1.1); }                              /* clareia ao passar o mouse */
-.principal:disabled { background: var(--suave); color: var(--secundario); cursor: not-allowed; }  /* botão desabilitado fica cinza */
-.botao { padding: 8px 14px; border: 1px solid var(--borda); border-radius: 3px; background: var(--superficie); color: inherit; }
-.botao:hover { background: var(--suave); }
-.voltar { border: 0; background: none; color: var(--texto); padding: 8px 0; margin-bottom: 12px; }
-.erro { color: var(--vermelho); font-size: 14px; margin-top: 10px; }
-.aviso { margin-top: 12px; padding: 10px; border-left: 4px solid var(--destaque); background: var(--destaque-suave); font-size: 14px; }
-.nota { color: var(--secundario); font-size: 13px; margin-top: 8px; }
+.campo {
+  display: flex;
+  flex-direction: column;    /* rótulo em cima, campo embaixo */
+  gap: 4px;
+  margin-top: 14px;
+  font-size: 14px;
+}
+input, select {
+  padding: 9px 10px;
+  border: 1px solid var(--secundario);
+  border-radius: 3px;
+  background: var(--superficie);
+  color: var(--texto);
+}
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 14px 0 0 0;
+}
+.modo label {
+  margin-right: 16px;
+}
+.duas {
+  display: flex;
+  gap: 12px;
+}
+.duas .campo {
+  flex: 1;
+}
+.principal {                                     /* botão laranja grande */
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  font-weight: bold;
+}
+.principal:disabled {                            /* botão desabilitado fica cinza */
+  background: var(--suave);
+  color: var(--secundario);
+  cursor: not-allowed;
+}
+.botao {                                         /* botão pequeno, com borda */
+  padding: 8px 14px;
+  border: 1px solid var(--borda);
+  border-radius: 3px;
+  background: var(--superficie);
+  color: var(--texto);
+}
+.voltar {
+  border: 0;
+  background: none;
+  color: var(--texto);
+  padding: 8px 0;
+  margin-bottom: 12px;
+}
+.erro {
+  color: var(--vermelho);
+  font-size: 14px;
+  margin-top: 10px;
+}
+.aviso {
+  margin-top: 12px;
+  padding: 10px;
+  border-left: 4px solid var(--destaque);
+  background: var(--destaque-suave);
+  font-size: 14px;
+}
+.nota {
+  color: var(--secundario);
+  font-size: 13px;
+  margin-top: 8px;
+}
 
-/* ---------- Etapa 1: planta à esquerda, período e resumo à direita (CSS Grid) ---------- */
-.reserva { display: grid; grid-template-columns: minmax(0, 1fr) 344px; grid-template-areas: "planta periodo" "planta resumo"; align-items: start; column-gap: 32px; }
-.planta-box { grid-area: planta; background: var(--superficie); border: 1px solid var(--borda); overflow: hidden; }
-.periodo { grid-area: periodo; padding-bottom: 24px; }
-.resumo-box { grid-area: resumo; padding-top: 24px; border-top: 1px solid var(--borda); }
-.titulo-planta { display: flex; justify-content: space-between; align-items: center; padding: 22px 24px 12px; }
-.titulo-planta p, .titulo-planta span { color: var(--secundario); font-size: 14px; }
-/* Legenda: quadradinhos coloridos que explicam as cores das vagas. */
-.legenda { display: flex; flex-wrap: wrap; gap: 18px; padding: 0 24px 16px; color: var(--secundario); font-size: 13px; }
-.legenda i { display: inline-block; width: 14px; height: 14px; margin-right: 6px; vertical-align: -2px; border: 1px solid var(--marcacao); }
-.legenda .livre { background: var(--superficie); }
-.legenda .selecionada { background: var(--destaque); }
-.legenda .reservada { background: var(--reservada); }
-.legenda-fim { padding: 14px 24px; color: var(--secundario); font-size: 12px; }
+/* ---------- Etapa 1: planta à esquerda, período e resumo à direita ---------- */
+.reserva {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;   /* cada coluna tem a altura do próprio conteúdo */
+}
+.planta-box {
+  flex: 1;                   /* ocupa todo o espaço que sobrar */
+  min-width: 0;              /* permite a planta rolar para o lado em vez de esticar a página */
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  overflow: hidden;
+}
+.lateral {
+  width: 344px;              /* coluna da direita (período e resumo) */
+}
+.titulo-planta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 24px 12px 24px;
+}
+.titulo-planta p, .titulo-planta span {
+  color: var(--secundario);
+  font-size: 14px;
+}
+.legenda {
+  display: flex;
+  flex-wrap: wrap;           /* se faltar espaço, quebra para a linha de baixo */
+  gap: 18px;
+  padding: 0 24px 16px 24px;
+  color: var(--secundario);
+  font-size: 13px;
+}
+.legenda i {                 /* quadradinhos coloridos da legenda */
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border: 1px solid var(--marcacao);
+}
+.legenda .livre {
+  background: var(--superficie);
+}
+.legenda .selecionada {
+  background: var(--destaque);
+}
+.legenda .reservada {
+  background: var(--reservada);
+}
+.legenda-fim {
+  padding: 14px 24px;
+  color: var(--secundario);
+  font-size: 12px;
+}
 
-/* ---------- Planta: posições em porcentagem, para o desenho acompanhar o tamanho da tela ---------- */
-.rolagem { overflow-x: auto; border-block: 1px solid var(--borda); }  /* em telas pequenas, rola para o lado */
-.planta { position: relative; min-width: 950px; aspect-ratio: 1.286; background: var(--piso); }
-.muro { position: absolute; inset: 3%; border: 2px solid var(--marcacao); }  /* contorno do estacionamento */
-.fileira { position: absolute; display: grid; }  /* cada fileira é uma grade de vagas */
-.topo-f { left: 19%; top: 7%; width: 69%; height: 18%; grid-template-columns: repeat(7, 1fr); }   /* 7 colunas: motos + V1 a V6 */
-.meio-f { left: 16%; top: 33%; width: 78%; height: 36%; grid-template-columns: repeat(8, 1fr); grid-template-rows: 1fr 1fr; }  /* 8 colunas x 2 linhas: 16 vagas */
-.base-f { left: 19%; top: 77%; width: 69%; height: 18%; grid-template-columns: repeat(7, 1fr); }  /* 7 colunas: motos + V21 a V26 */
-.motos { display: grid; grid-template-rows: repeat(3, 1fr); }  /* pilha de 3 vagas de moto */
+/* ---------- Planta do estacionamento ----------
+   As fileiras são posicionadas com porcentagens dentro da planta. */
+.rolagem {
+  overflow-x: auto;          /* em telas pequenas, rola para o lado */
+  border-top: 1px solid var(--borda);
+  border-bottom: 1px solid var(--borda);
+}
+.planta {
+  position: relative;        /* as fileiras são posicionadas em relação a ela */
+  min-width: 950px;
+  height: 740px;
+  background: var(--piso);
+}
+.muro {                      /* contorno do estacionamento */
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  right: 3%;
+  bottom: 3%;
+  border: 2px solid var(--marcacao);
+}
+.fileira {
+  position: absolute;
+  display: flex;             /* as vagas ficam lado a lado, dividindo o espaço */
+}
+.topo-f {                    /* fileira de cima */
+  left: 19%;
+  top: 7%;
+  width: 69%;
+  height: 18%;
+}
+.meio-f {                    /* fileira do meio: 16 vagas, 8 por linha */
+  left: 16%;
+  top: 33%;
+  width: 78%;
+  height: 36%;
+  flex-wrap: wrap;
+}
+.meio-f .vaga {
+  width: 12.5%;              /* 8 vagas por linha (100% / 8) */
+  height: 50%;               /* 2 linhas */
+}
+.base-f {                    /* fileira de baixo */
+  left: 19%;
+  top: 77%;
+  width: 69%;
+  height: 18%;
+}
+.motos {                     /* pilha de 3 vagas de moto, uma em cima da outra */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.topo-f .vaga, .base-f .vaga {
+  flex: 1;                   /* cada vaga ocupa uma parte igual da fileira */
+}
+.motos .vaga {
+  flex: 1;
+}
 
-/* Cada vaga é um botão. */
-.vaga { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 0; padding: 4px; border: 1px solid var(--marcacao); background: var(--superficie); color: var(--texto); font-weight: 600; }
-.vaga.moto { flex-direction: row; }
-.vaga.acessivel { color: var(--azul); }
-.vaga:enabled:hover { background: var(--destaque-suave); outline: 2px solid var(--destaque); outline-offset: -2px; }  /* destaque ao passar o mouse */
-.vaga.selecionada, .vaga.selecionada:enabled:hover { background: var(--destaque); color: var(--sobre-destaque); }  /* vaga escolhida: laranja (também com o mouse em cima) */
-.vaga:disabled { background: var(--reservada); color: var(--secundario); cursor: not-allowed; }                   /* reservada ou sem período válido: cinza */
-/* Setas de entrada e saída desenhadas na lateral da planta. */
-.entrada { position: absolute; left: 2%; top: 35%; width: 9%; height: 32%; border-right: 2px dashed var(--marcacao); display: flex; flex-direction: column; justify-content: space-around; text-align: center; color: var(--secundario); font: 32px/1 var(--fonte-titulo); }
-.entrada small { display: block; font: 11px var(--fonte-texto); }
+/* Cada vaga é um botão */
+.vaga {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--marcacao);
+  background: var(--superficie);
+  color: var(--texto);
+  font-weight: bold;
+}
+.vaga.moto {
+  flex-direction: row;       /* código e ícone lado a lado */
+}
+.vaga.acessivel {
+  color: var(--azul);
+}
+.vaga:hover {                /* mouse em cima */
+  background: var(--destaque-suave);
+}
+.vaga.selecionada {          /* vaga escolhida: laranja */
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+}
+.vaga:disabled {             /* reservada ou sem período válido: cinza */
+  background: var(--reservada);
+  color: var(--secundario);
+  cursor: not-allowed;
+}
+/* As três regras acima têm o mesmo peso; vale a que vier por último. */
 
-/* ---------- Resumo da reserva ---------- */
-.vaga-escolhida { margin: 12px 0; padding: 12px; background: var(--superficie); border: 1px solid var(--borda); }  /* caixa com o código da vaga */
-.vaga-escolhida span, .vaga-escolhida small { display: block; color: var(--secundario); font-size: 13px; }
-.vaga-escolhida strong { font: 600 28px var(--fonte-titulo); }
-/* Cada par "nome / valor" ocupa uma linha, com o nome à esquerda e o valor à direita. */
-dl div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--borda); font-size: 14px; }
-dt { color: var(--secundario); }
-dd { margin: 0; font-weight: 600; text-align: right; }
-.total dd { font-size: 20px; color: var(--destaque); }
+.entrada {                   /* setas de entrada e saída na lateral da planta */
+  position: absolute;
+  left: 2%;
+  top: 35%;
+  width: 9%;
+  height: 32%;
+  border-right: 2px dashed var(--marcacao);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  text-align: center;
+  color: var(--secundario);
+  font-size: 32px;
+}
+.entrada small {
+  display: block;
+  font-size: 11px;
+}
+
+/* ---------- Período e resumo da reserva ---------- */
+.resumo-box {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--borda);
+}
+.vaga-escolhida {            /* caixa com o código da vaga */
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+}
+.vaga-escolhida span, .vaga-escolhida small {
+  display: block;
+  color: var(--secundario);
+  font-size: 13px;
+}
+.vaga-escolhida strong {
+  font-family: var(--fonte-titulo);
+  font-size: 28px;
+}
+dl div {                     /* cada linha "nome ..... valor" */
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--borda);
+  font-size: 14px;
+}
+dt {
+  color: var(--secundario);
+}
+dd {
+  margin: 0;
+  font-weight: bold;
+  text-align: right;
+}
+.total dd {
+  font-size: 20px;
+  color: var(--destaque);
+}
 
 /* ---------- Etapas 2 e 3: resumo à esquerda e formulário à direita ---------- */
-.duas-colunas { display: grid; grid-template-columns: 344px minmax(0, 560px); gap: 32px; align-items: start; }
-.duas-colunas .resumo-box { grid-area: auto; padding-top: 0; border: 0; }  /* "grid-area: auto" cancela a área da etapa 1, que não existe nesta grade */
-.form-box { background: var(--superficie); border: 1px solid var(--borda); padding: 24px; }
-.form-box h2 { margin-top: 20px; }
-.form-box h2:first-child { margin-top: 0; }
-.pagamentos label { display: block; padding: 12px; margin-bottom: 8px; border: 1px solid var(--borda); }
-.pagamentos label:has(:checked) { border-color: var(--destaque); background: var(--destaque-suave); }  /* :has() destaca a opção marcada, sem JavaScript */
-.pagamentos small { display: block; margin-left: 24px; color: var(--secundario); }
-#pix { display: block; margin-top: 12px; }  /* QR Code de demonstração */
+.duas-colunas {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+.duas-colunas aside {
+  width: 344px;
+}
+.duas-colunas .resumo-box {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.form-box {
+  flex: 1;
+  max-width: 560px;
+  padding: 24px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+}
+.form-box h2 {
+  margin-top: 20px;
+}
+.form-box h2:first-child {   /* o primeiro título da caixa não precisa de espaço em cima */
+  margin-top: 0;
+}
+.pagamentos label {
+  display: block;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--borda);
+}
+.pagamentos small {
+  display: block;
+  margin-left: 24px;
+  color: var(--secundario);
+}
+#pix {
+  display: block;
+  margin-top: 12px;
+}
 
 /* ---------- Minhas reservas ---------- */
-.minhas { margin-top: 40px; }
-.titulo-minhas { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-#contador { background: var(--superficie); border: 1px solid var(--borda); padding: 2px 8px; font: 14px var(--fonte-texto); }
-/* Cada reserva é uma caixa com o código da vaga, os detalhes e o botão de cancelar. */
-.recibo { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; padding: 16px; margin-bottom: 8px; background: var(--superficie); border: 1px solid var(--borda); }
-.recibo p { flex: 1; min-width: 220px; }
-.recibo strong.codigo { font: 600 28px var(--fonte-titulo); color: var(--destaque); min-width: 56px; }  /* código da vaga em laranja */
+.minhas {
+  margin-top: 40px;
+}
+.titulo-minhas {
+  margin-bottom: 12px;
+}
+#contador {
+  padding: 2px 8px;
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+  font-size: 14px;
+}
+.recibo {                    /* caixa de cada reserva (criada pelo JavaScript) */
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 8px;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+}
+.recibo p {
+  flex: 1;
+  min-width: 220px;
+}
+.codigo {                    /* código da vaga em laranja */
+  min-width: 56px;
+  font-family: var(--fonte-titulo);
+  font-size: 28px;
+  color: var(--destaque);
+}
 
 /* ---------- Rodapé ---------- */
-.rodape { padding: 20px 0 32px; border-top: 1px solid var(--borda); color: var(--secundario); font-size: 14px; }
+.rodape {
+  padding-top: 20px;
+  padding-bottom: 32px;
+  border-top: 1px solid var(--borda);
+  color: var(--secundario);
+  font-size: 14px;
+}
 
 /* ---------- Telas menores (até 1000 px): tudo em uma coluna ---------- */
 @media (max-width: 1000px) {
-  .miolo { width: calc(100% - 32px); }
-  .reserva { grid-template-columns: 1fr; grid-template-areas: "periodo" "planta" "resumo"; }  /* ordem: período, planta, resumo */
-  .duas-colunas { grid-template-columns: 1fr; }
-  .etapas li { font-size: 12px; }
+  .miolo {
+    padding: 0 16px;
+  }
+  .reserva, .duas-colunas {
+    flex-direction: column;  /* os blocos passam a ficar um embaixo do outro */
+    align-items: stretch;
+  }
+  .lateral, .duas-colunas aside {
+    width: 100%;
+  }
+  .form-box {
+    max-width: none;
+  }
 }

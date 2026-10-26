@@ -12,9 +12,6 @@
   <script src="script.js" defer></script>                                 <!-- liga a lógica; "defer" espera a página carregar antes de rodar -->
 </head>
 <body>
-  <!-- Filtro invisível: no tema claro, troca o preto da logo por branco (o CSS usa o id "logo-claro") -->
-  <svg width="0" height="0" style="position:absolute"><filter id="logo-claro" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 -1 0 0  0 1 -1 0 0  0 0 0 0 0  1 0 0 0 0"/></filter></svg>
-
   <!-- Biblioteca de ícones (invisível): cada <symbol> é um desenho que o resto da página reutiliza com <use href="#icone-...">.
        Os ícones usam a cor do texto onde forem colocados. -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -28,7 +25,7 @@
   <header class="topo">
     <div class="miolo">
       <a class="marca" href="">
-        <span class="logo"><img src="image/logo-provisoria.jpeg" alt="Logo"></span>
+        <img class="logo" src="image/logo-provisoria.jpeg" alt="Logo do ParkingHub">
         <span>ParkingHub<small>Reserva de vagas</small></span>
       </a>
       <!-- Botão de tema: tem os dois ícones e o CSS mostra só um (sol no tema escuro, lua no claro) -->
@@ -43,27 +40,10 @@
     <p class="sub">Escolha sua vaga, informe seus dados e siga para o pagamento.</p>
 
     <!-- Barra de progresso: o JavaScript marca qual etapa está ativa -->
-    <ol class="etapas" id="etapas"><li>Vaga e período</li><li>Seus dados</li><li>Pagamento</li></ol>
+    <ol class="etapas" id="etapas"><li>1. Vaga e período</li><li>2. Seus dados</li><li>3. Pagamento</li></ol>
 
     <!-- ===== ETAPA 1: período, planta e resumo ===== -->
     <form class="reserva" id="tela-vaga" novalidate>
-
-      <!-- Período: modalidade, data e horários -->
-      <section class="periodo">
-        <h2>Período da reserva</h2>
-        <fieldset class="modo">
-          <legend>Modalidade</legend>
-          <!-- Os dois botões de rádio têm o mesmo "name", então só um pode ficar marcado -->
-          <label><input type="radio" name="modalidade" value="horario" checked> Por horário</label>
-          <label><input type="radio" name="modalidade" value="diaria"> Diária de 24 h</label>
-        </fieldset>
-        <label class="campo">Data de entrada <input type="date" id="data"></label>
-        <div class="duas">
-          <label class="campo">Entrada <input type="time" id="entrada" value="08:00"></label>
-          <label class="campo" id="campo-saida">Saída <input type="time" id="saida" value="10:00"></label> <!-- some na diária -->
-        </div>
-        <p class="erro" id="erro-periodo" hidden>Confira a data e os horários: a saída precisa ser depois da entrada.</p> <!-- aparece quando o período é inválido -->
-      </section>
 
       <!-- Planta: as fileiras estão VAZIAS; o JavaScript cria as 34 vagas dentro delas -->
       <section class="planta-box">
@@ -89,6 +69,26 @@
         <p class="legenda-fim">V1–V26: carros · M1–M6: motos · D1–D2: acessíveis</p>
       </section>
 
+      <!-- Coluna da direita: período e resumo -->
+      <div class="lateral">
+
+      <!-- Período: modalidade, data e horários -->
+      <section class="periodo">
+        <h2>Período da reserva</h2>
+        <fieldset class="modo">
+          <legend>Modalidade</legend>
+          <!-- Os dois botões de rádio têm o mesmo "name", então só um pode ficar marcado -->
+          <label><input type="radio" name="modalidade" value="horario" checked> Por horário</label>
+          <label><input type="radio" name="modalidade" value="diaria"> Diária de 24 h</label>
+        </fieldset>
+        <label class="campo">Data de entrada <input type="date" id="data"></label>
+        <div class="duas">
+          <label class="campo">Entrada <input type="time" id="entrada" value="08:00"></label>
+          <label class="campo" id="campo-saida">Saída <input type="time" id="saida" value="10:00"></label> <!-- some na diária -->
+        </div>
+        <p class="erro" id="erro-periodo" hidden>Confira a data e os horários: a saída precisa ser depois da entrada.</p> <!-- aparece quando o período é inválido -->
+      </section>
+
       <!-- Resumo: vaga, datas, duração e total (preenchidos pelo JavaScript) -->
       <section class="resumo-box">
         <h2>Confira sua reserva</h2>
@@ -103,6 +103,8 @@
         <p class="aviso" id="aviso" role="status" hidden></p>                         <!-- mensagens de sucesso ou de vaga ocupada -->
         <p class="nota" id="tarifas"></p>
       </section>
+
+      </div> <!-- fim da coluna da direita -->
     </form>
 
     <!-- ===== ETAPAS 2 e 3: o resumo à esquerda é o mesmo; à direita aparece o formulário de dados OU o de pagamento ===== -->

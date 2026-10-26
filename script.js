@@ -106,7 +106,11 @@ function atualizar() {
   for (const vaga of vagas) {
     const ocupada = periodo != null && temConflito("vaga", vaga.codigo, periodo);
     vaga.botao.disabled = periodo == null || ocupada;
-    vaga.botao.classList.toggle("selecionada", vaga == vagaEscolhida);
+    if (vaga == vagaEscolhida) {
+      vaga.botao.classList.add("selecionada");     // pinta de laranja
+    } else {
+      vaga.botao.classList.remove("selecionada");
+    }
     if (periodo != null && !ocupada) livres++;
   }
 
@@ -287,15 +291,18 @@ function cancelarReserva(reserva) {  // a reserva deixa de estar "ativa", então
 
 // ----- 8) Tema e início do programa -----
 
-// O CSS troca as cores conforme o atributo data-tema ("claro" ou "escuro").
-document.documentElement.dataset.tema = matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+// Botão de tema: liga e desliga a classe "escuro" no <body>. O CSS troca as cores por causa dela.
 pegar("tema").onclick = function () {
-  const raiz = document.documentElement;
-  raiz.dataset.tema = (raiz.dataset.tema == "escuro") ? "claro" : "escuro";
+  document.body.classList.toggle("escuro");
 };
 
-const hoje = new Date();  // a data já começa em hoje (formato AAAA-MM-DD), assim o período é válido
-pegar("data").value = hoje.getFullYear() + "-" + String(hoje.getMonth() + 1).padStart(2, "0") + "-" + String(hoje.getDate()).padStart(2, "0");
+// A data já começa em hoje (formato AAAA-MM-DD), assim o período é válido e a planta não fica bloqueada.
+const hoje = new Date();
+let mes = hoje.getMonth() + 1;  // os meses começam em 0 (janeiro = 0), por isso somamos 1
+let dia = hoje.getDate();
+if (mes < 10) mes = "0" + mes;  // coloca o zero na frente: 5 vira "05"
+if (dia < 10) dia = "0" + dia;
+pegar("data").value = hoje.getFullYear() + "-" + mes + "-" + dia;
 pegar("tarifas").textContent = "Valores de exemplo: " + moeda(VALOR_HORA) + " por hora ou " + moeda(VALOR_DIARIA) + " pela diária.";
 
 mostrarEtapa(1);   // começa na etapa 1
