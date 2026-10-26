@@ -282,11 +282,14 @@ function listarReservas() {  // desenha a lista (a mais nova primeiro)
 }
 
 function cancelarReserva(reserva) {  // a reserva deixa de estar "ativa", então a vaga volta a ficar livre
-  if (!confirm("Cancelar a reserva da vaga " + reserva.vaga + "?")) return;
+  if (!confirm("Deseja cancelar a reserva da vaga " + reserva.vaga + "? Clique em OK para confirmar.")) return;
   reserva.status = "cancelada";
   salvarReservas();
   atualizar();
   listarReservas();
+  // Troca a mensagem antiga ("reserva confirmada") por um aviso de cancelamento.
+  pegar("aviso").textContent = "Reserva da vaga " + reserva.vaga + " cancelada. A vaga está livre de novo.";
+  pegar("aviso").hidden = false;
 }
 
 // ----- 8) Tema e início do programa -----
