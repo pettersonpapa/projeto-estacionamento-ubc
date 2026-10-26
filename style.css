@@ -61,7 +61,12 @@ button { cursor: pointer; }
 .logo { width: 60px; height: 60px; overflow: hidden; position: relative; }
 .logo img { position: absolute; width: 112px; left: -26px; top: -24px; filter: url("#logo-claro"); }  /* filtro do SVG no HTML (tema claro) */
 :root[data-tema="escuro"] .logo img { filter: none; }
-.icone { width: 44px; height: 44px; border: 0; background: none; color: inherit; font-size: 20px; }
+.icone { width: 44px; height: 44px; border: 0; background: none; color: inherit; display: inline-flex; align-items: center; justify-content: center; }
+/* Ícones SVG: desenhados só com traço, que usa a cor do texto (currentColor). Os desenhos ficam no index.html. */
+.icone-svg { width: 19px; height: 19px; flex: 0 0 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.icone .icone-svg { width: 24px; height: 24px; }                                                   /* ícone do tema, no cabeçalho */
+.vaga.acessivel .icone-svg { width: 25px; height: 25px; flex-basis: 25px; }                        /* vaga acessível: ícone maior, na cor azul da vaga */
+.legenda .icone-svg { width: 17px; height: 17px; flex-basis: 17px; color: var(--azul); vertical-align: -4px; }  /* legenda */
 
 /* ---------- Barra de etapas (os números 1., 2., 3. são gerados automaticamente) ---------- */
 .etapas { display: flex; gap: 8px; padding: 0; margin: 0 0 24px; list-style: none; counter-reset: etapa; }

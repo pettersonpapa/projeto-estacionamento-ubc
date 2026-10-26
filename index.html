@@ -15,6 +15,15 @@
   <!-- Filtro invisível: no tema claro, troca o preto da logo por branco (o CSS usa o id "logo-claro") -->
   <svg width="0" height="0" style="position:absolute"><filter id="logo-claro" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="1 0 -1 0 0  0 1 -1 0 0  0 0 0 0 0  1 0 0 0 0"/></filter></svg>
 
+  <!-- Biblioteca de ícones (invisível): cada <symbol> é um desenho que o resto da página reutiliza com <use href="#icone-...">.
+       Os ícones usam a cor do texto onde forem colocados. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="icone-lua" viewBox="0 0 24 24"><path d="M20.8 13.1A9 9 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z"/></symbol>
+    <symbol id="icone-sol" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="icone-moto" viewBox="0 0 24 24"><circle cx="5" cy="17" r="3.5"/><circle cx="19" cy="17" r="3.5"/><path d="M19 17 15 6h-3m-9 4h5l3 4h5M5 17l4-5m1 2 1 3h4m-7-7 4-2h4"/><path d="M8 10h4l3 3H10Z" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="icone-acessivel" viewBox="0 0 24 24"><circle cx="11" cy="4" r="1.5"/><path d="M11 7v6h6l3 7m-9-10h6M8 11a6 6 0 1 0 8 8"/></symbol>
+  </svg>
+
   <!-- CABEÇALHO: logo, nome do sistema e botão que alterna o tema claro/escuro -->
   <header class="topo">
     <div class="miolo">
@@ -22,7 +31,7 @@
         <span class="logo"><img src="image/logo-provisoria.jpeg" alt="Logo"></span>
         <span>ParkingHub<small>Reserva de vagas</small></span>
       </a>
-      <button class="icone" id="tema" type="button" aria-label="Alternar tema">🌙</button>
+      <button class="icone" id="tema" type="button" aria-label="Alternar tema"><svg class="icone-svg" aria-hidden="true"><use href="#icone-lua"/></svg></button> <!-- o ícone (lua ou sol) é trocado pelo JavaScript -->
     </div>
   </header>
 
@@ -63,7 +72,7 @@
           <span><i class="livre"></i>Disponível</span>
           <span><i class="selecionada"></i>Selecionada</span>
           <span><i class="reservada"></i>Reservada</span>
-          <span>♿ Acessível</span>
+          <span><svg class="icone-svg" aria-hidden="true"><use href="#icone-acessivel"/></svg> Acessível</span>
         </div>
         <div class="rolagem">
           <div class="planta">

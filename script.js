@@ -37,6 +37,10 @@ const escaparHtml = texto => texto.replace(/[&<>"]/g, caractere => "&#" + caract
 // Devolve a modalidade marcada no formulário: "horario" ou "diaria".
 const modalidade = () => document.querySelector('[name="modalidade"]:checked').value;
 
+// Devolve o HTML de um ícone da biblioteca definida no index.html.
+// nome = "moto", "acessivel", "lua" ou "sol". O ícone herda a cor do texto onde for colocado.
+const icone = nome => `<svg class="icone-svg" aria-hidden="true"><use href="#icone-${nome}"/></svg>`;
+
 // Converte milissegundos para o texto "AAAA-MM-DDTHH:MM" no horário local do usuário.
 // (toISOString trabalha em UTC, por isso o fuso horário é descontado antes.)
 const paraTextoLocal = milissegundos => new Date(milissegundos - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
@@ -63,7 +67,9 @@ function criarVaga(codigo, tipo, fileira, classeExtra = "") {
   const botao = document.createElement("button");
   botao.type = "button"; // não envia o formulário ao clicar
   botao.className = "vaga " + classeExtra;
-  botao.textContent = codigo + (tipo == "Moto" ? " 🏍️" : tipo == "Acessível" ? " ♿" : "");
+  // Código da vaga e, nas vagas de moto e acessíveis, o ícone correspondente ao lado.
+  botao.innerHTML = codigo + (tipo == "Moto" ? icone("moto") : tipo == "Acessível" ? icone("acessivel") : "");
+  botao.title = `${codigo} · ${tipo}`; // texto que aparece ao passar o mouse
   const vaga = { codigo, tipo, botao };
 
   // Ao clicar: se a vaga já estava selecionada, desmarca; senão, seleciona. Depois redesenha a tela.
@@ -479,7 +485,7 @@ $("form-saida").onsubmit = evento => {
 // Liga ou desliga o tema escuro: escreve data-tema no elemento raiz (o CSS troca as cores por isso) e troca o ícone.
 function aplicarTema(escuro) {
   document.documentElement.dataset.tema = escuro ? "escuro" : "claro";
-  $("tema").textContent = escuro ? "☀️" : "🌙";
+  $("tema").innerHTML = icone(escuro ? "sol" : "lua"); // no tema escuro mostra o sol (para voltar ao claro) e vice-versa
 }
 $("tema").onclick = () => aplicarTema(document.documentElement.dataset.tema != "escuro");
 // Começa no mesmo tema que o sistema operacional do usuário usa.
