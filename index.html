@@ -81,10 +81,28 @@
           <label><input type="radio" name="modalidade" value="horario" checked> Por horário</label>
           <label><input type="radio" name="modalidade" value="diaria"> Diária de 24 h</label>
         </fieldset>
-        <label class="campo">Data de entrada <input type="date" id="data"></label>
+        <!-- Data e horários em listas de escolha: assim ficam sempre no formato do Brasil (dia/mês/ano e 24 horas).
+             O JavaScript preenche as opções de cada lista. -->
+        <div class="campo">Data de entrada
+          <span class="trio">
+            <select id="dia" aria-label="Dia"></select>
+            <select id="mes" aria-label="Mês"></select>
+            <select id="ano" aria-label="Ano"></select>
+          </span>
+        </div>
         <div class="duas">
-          <label class="campo">Entrada <input type="time" id="entrada" value="08:00"></label>
-          <label class="campo" id="campo-saida">Saída <input type="time" id="saida" value="10:00"></label> <!-- some na diária -->
+          <div class="campo">Entrada
+            <span class="trio">
+              <select id="entrada-hora" aria-label="Hora de entrada"></select>
+              <select id="entrada-min" aria-label="Minuto de entrada"></select>
+            </span>
+          </div>
+          <div class="campo" id="campo-saida">Saída <!-- some na diária -->
+            <span class="trio">
+              <select id="saida-hora" aria-label="Hora de saída"></select>
+              <select id="saida-min" aria-label="Minuto de saída"></select>
+            </span>
+          </div>
         </div>
         <p class="erro" id="erro-periodo" hidden>Confira a data e os horários: a saída precisa ser depois da entrada.</p> <!-- aparece quando o período é inválido -->
       </section>

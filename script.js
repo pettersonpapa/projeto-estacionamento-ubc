@@ -67,13 +67,19 @@ criarCarros(pegar("fileira-base"), 21, 26);
 
 // ----- 3) Período, valor e conflitos -----
 
-// Lê a data e os horários e devolve { inicio, fim, valor }. Devolve null se estiver inválido.
+// Lê a data e os horários das listas de escolha e devolve { inicio, fim, valor }. Devolve null se estiver inválido.
 function calcularPeriodo() {
-  const dia = pegar("data").value;
+  // O JavaScript "corrige" datas que não existem (31/02 viraria 03/03). Por isso conferimos se o dia existe naquele mês.
+  const existe = new Date(Date.UTC(Number(pegar("ano").value), Number(pegar("mes").value) - 1, Number(pegar("dia").value)));
+  if (existe.getUTCDate() != Number(pegar("dia").value)) return null;
+
+  const data = pegar("ano").value + "-" + pegar("mes").value + "-" + pegar("dia").value;   // ex.: "2026-10-26"
+  const horaEntrada = pegar("entrada-hora").value + ":" + pegar("entrada-min").value;       // ex.: "08:00"
+  const horaSaida = pegar("saida-hora").value + ":" + pegar("saida-min").value;
   // Juntamos data + hora + fuso (ex.: "2026-10-26T08:00:00-03:00") para o horário ser sempre o de Brasília.
-  const inicio = new Date(dia + "T" + pegar("entrada").value + ":00" + FUSO_BRASIL).getTime();
-  const fim = ehDiaria() ? inicio + 24 * MS_POR_HORA : new Date(dia + "T" + pegar("saida").value + ":00" + FUSO_BRASIL).getTime();
-  if (isNaN(inicio) || isNaN(fim) || fim <= inicio) return null;  // isNaN = "não é número" (data vazia)
+  const inicio = new Date(data + "T" + horaEntrada + ":00" + FUSO_BRASIL).getTime();
+  const fim = ehDiaria() ? inicio + 24 * MS_POR_HORA : new Date(data + "T" + horaSaida + ":00" + FUSO_BRASIL).getTime();
+  if (isNaN(inicio) || isNaN(fim) || fim <= inicio) return null;  // isNaN = "não é número" (data inválida)
 
   let valor = VALOR_DIARIA;
   if (!ehDiaria()) valor = Math.ceil((fim - inicio) / MS_POR_HORA) * VALOR_HORA;  // ceil arredonda p/ cima: 2h30 = 3 horas
@@ -304,16 +310,50 @@ pegar("tema").onclick = function () {
   document.body.classList.toggle("escuro");
 };
 
+// Listas de escolha da data e dos horários. Usamos listas (e não os campos de data/hora do navegador)
+// porque o navegador mostra esses campos no idioma dele (mês/dia/ano e AM/PM). Assim fica sempre no padrão do Brasil.
+const NOMES_MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+
+function adicionarOpcao(idLista, valor, texto) {  // coloca uma opção (valor e texto) dentro de uma lista de escolha
+  const opcao = document.createElement("option");
+  opcao.value = valor;
+  opcao.textContent = texto;
+  pegar(idLista).append(opcao);
+}
+
+for (let n = 1; n <= 31; n++) {
+  adicionarOpcao("dia", doisDigitos(n), doisDigitos(n));
+}
+for (let n = 1; n <= 12; n++) {
+  adicionarOpcao("mes", doisDigitos(n), NOMES_MESES[n - 1]);
+}
+for (let hora = 0; hora <= 23; hora++) {      // horas de 00 a 23 (formato de 24 horas)
+  adicionarOpcao("entrada-hora", doisDigitos(hora), doisDigitos(hora));
+  adicionarOpcao("saida-hora", doisDigitos(hora), doisDigitos(hora));
+}
+for (let minuto = 0; minuto < 60; minuto += 15) {  // minutos de 15 em 15: 00, 15, 30, 45
+  adicionarOpcao("entrada-min", doisDigitos(minuto), doisDigitos(minuto));
+  adicionarOpcao("saida-min", doisDigitos(minuto), doisDigitos(minuto));
+}
+
 // O formulário já começa com a data e a hora de agora no Brasil, assim o período é válido e a planta não fica bloqueada.
 // Para achar a hora de Brasília, tiramos 3 horas do relógio mundial (UTC) e lemos o resultado com os métodos "getUTC...".
 const agora = new Date(Date.now() - 3 * MS_POR_HORA);
 const horaAtual = agora.getUTCHours();
-pegar("data").value = agora.getUTCFullYear() + "-" + doisDigitos(agora.getUTCMonth() + 1) + "-" + doisDigitos(agora.getUTCDate()); // os meses começam em 0, por isso o +1
-pegar("entrada").value = doisDigitos(horaAtual) + ":00";   // entrada na hora cheia atual
+const anoAtual = agora.getUTCFullYear();
+adicionarOpcao("ano", anoAtual, anoAtual);          // dois anos para escolher: o atual e o próximo
+adicionarOpcao("ano", anoAtual + 1, anoAtual + 1);
+pegar("dia").value = doisDigitos(agora.getUTCDate());
+pegar("mes").value = doisDigitos(agora.getUTCMonth() + 1);  // os meses começam em 0, por isso o +1
+pegar("ano").value = anoAtual;
+pegar("entrada-hora").value = doisDigitos(horaAtual);       // entrada na hora cheia atual
+pegar("entrada-min").value = "00";
 if (horaAtual < 22) {
-  pegar("saida").value = doisDigitos(horaAtual + 2) + ":00";  // saída 2 horas depois
+  pegar("saida-hora").value = doisDigitos(horaAtual + 2);   // saída 2 horas depois
+  pegar("saida-min").value = "00";
 } else {
-  pegar("saida").value = "23:59";                         // perto da meia-noite: a saída fica no fim do mesmo dia
+  pegar("saida-hora").value = "23";                         // perto da meia-noite: a saída fica no fim do mesmo dia
+  pegar("saida-min").value = "45";
 }
 pegar("tarifas").textContent = "Valores de exemplo: " + moeda(VALOR_HORA) + " por hora ou " + moeda(VALOR_DIARIA) + " pela diária. Todos os horários seguem o horário de Brasília.";
 

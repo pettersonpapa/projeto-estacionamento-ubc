@@ -227,6 +227,14 @@ fieldset {
 .duas .campo {
   flex: 1;
 }
+.trio {                      /* várias listas de escolha lado a lado (dia / mês / ano) */
+  display: flex;
+  gap: 6px;
+}
+.trio select {
+  flex: 1;
+  min-width: 0;              /* deixa as listas encolherem para caberem na coluna */
+}
 .principal {                                     /* botão laranja grande */
   width: 100%;
   margin-top: 16px;
